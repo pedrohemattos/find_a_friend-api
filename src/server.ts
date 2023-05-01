@@ -1,7 +1,5 @@
-import express from 'express';
+import { app } from './app';
 import { env } from './env';
-
-const app = express();
 
 app.listen(env.PORT, () => {
   console.log(`🚀 Server running on port ${env.PORT}`);
