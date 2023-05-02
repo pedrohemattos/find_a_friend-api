@@ -1,12 +1,12 @@
 import { Router } from "express";
 
-import { create } from "./create";
+import { register } from "./register";
 import { listAll } from './listAll';
 
 const router = Router();
 
-router.post("/", create);
-router.get("/", listAll);
+router.post("/", register);
+router.get("/:city", listAll);
 
 export { router };
 

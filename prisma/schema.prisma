@@ -16,36 +16,42 @@ model Organization {
   email         String @unique
   password_hash String
   phone         String @unique
-  address       Adress @relation(fields: [address_id], references: [id])
-  address_id    String
+  zip_code      String
+  city          String
+  
   pets          Pet[]
 
   @@map("organizations")
-}
-
-model Adress {
-  id            String         @id @default(uuid())
-  street        String
-  zip_code      String
-  city          String
-  organizations Organization[]
-
-  @@map("addresses")
 }
 
 model Pet {
   id                 String       @id @default(uuid())
   name               String
   about              String
-  age                Int
+  animal             Animal
+  gender             Gender
+  breed              String?
+  age                String
   size               Size
   energy_level       Level
   independency_level Level
-  photos             Bytes?
+  photo              String?
+  city               String
+
   organization       Organization @relation(fields: [organization_id], references: [id])
   organization_id    String
 
   @@map("pets")
+}
+
+enum Animal {
+  DOG
+  CAT
+}
+
+enum Gender {
+  MALE
+  FEMALE
 }
 
 enum Size {

@@ -1,12 +1,14 @@
 import { Prisma, Organization } from "@prisma/client";
 import { OrganizationsRepository } from "../organizations-repository";
 
-
 export class InMemoryOrganizationsRepository implements OrganizationsRepository {
     public items: Organization[] = [];
 
     async create(data: Prisma.OrganizationCreateInput) {
-        const organization = Object.assign({...data, id: '123'})
+        const organization = Object.assign({
+            ...data, 
+            id: '123'
+        })
 
         this.items.push(organization);
 

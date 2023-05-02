@@ -7,21 +7,18 @@ interface createOrganizationProps {
   email: string
   password: string
   phone: string
-  address: {
-    city: string,
-    street: string,
-    zip_code: string
-  }
+  zip_code: string
+  city: string
 }
 
 export class CreateOrganizationUseCase {
   constructor(private organizationsRepository: OrganizationsRepository) {}
 
-  async execute({ name, email, password, phone, address }: createOrganizationProps) {
+  async execute({ name, email, password, phone, zip_code, city }: createOrganizationProps) {
 
     const password_hash = await hash(password, 6);
 
-    const organizationWithSameEmail = await this.organizationsRepository.findEmail(email)
+    const organizationWithSameEmail = await this.organizationsRepository.findEmail(email);
 
     if(organizationWithSameEmail) {
       throw new EmailAlreadyExistsError();
@@ -32,15 +29,10 @@ export class CreateOrganizationUseCase {
       email,
       password_hash,
       phone,
-      address: {
-        create: {
-          city: address.city,
-          street: address.street,
-          zip_code: address.zip_code
-        }
-      }
+      zip_code,
+      city
     });
 
-    return {organization}
+    return { organization };
   }
 }
