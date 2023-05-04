@@ -16,16 +16,17 @@ export async function register(request: Request, response: Response) {
     energy_level: z.enum(["LOW", "MEDIUM", "HIGH"]),
     independency_level: z.enum(["LOW", "MEDIUM", "HIGH"]),
     photo: z.string().optional().default("Não informado."),
-    organization_id: z.string()
   });
 
   try {
-    const { name, about, animal, gender, breed, age, size, energy_level, independency_level, photo, organization_id } = createBodySchema.parse(request.body);
+    const { name, about, animal, gender, breed, age, size, energy_level, independency_level, photo } = createBodySchema.parse(request.body);
     
     const petsRepository = new PrismaPetsRepository();
     const organizationsRepository = new PrismaOrganizationsRepository();
     const registerPetUseCase = new RegisterPetUseCase(petsRepository, organizationsRepository);
 
+    const organization_id = request.sub;
+  
     const organization = await organizationsRepository.findById(organization_id);
     
     if(!organization) {

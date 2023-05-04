@@ -3,7 +3,8 @@ import { z } from 'zod';
 
 const envSchema = z.object({
   DOTE_ENV: z.enum(['dev', 'test', 'prod']).default('dev'),
-  PORT: z.coerce.number().default(3000)
+  PORT: z.coerce.number().default(3000),
+  JWT_SECRET: z.string()
 });
 
 const validateEnv = envSchema.safeParse(process.env);
