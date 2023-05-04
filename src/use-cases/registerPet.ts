@@ -1,4 +1,7 @@
-import { PetsRepository } from "../repositories/pets-repository"
+import { Pet } from "@prisma/client";
+import { PetsRepository } from "../repositories/pets-repository";
+import { OrganizationsRepository } from "../repositories/organizations-repository";
+import { OrganizationNotFoundError } from "./errors/organization-not-found-error";
 
 interface RegisterPetUseCaseRequest {
   name: string
@@ -13,12 +16,18 @@ interface RegisterPetUseCaseRequest {
   photo?: string
   city: string
   organization_id: string
-}
+};
+
+interface RegisterPetUseCaseResponse {
+  pet: Pet
+};
 
 export class RegisterPetUseCase {
-  constructor(private petsRepository: PetsRepository) {}
+  constructor(private petsRepository: PetsRepository, private organizationsRepository: OrganizationsRepository) {}
 
-  async execute({ name, about, animal, gender, breed, age, size, energy_level, independency_level, photo, city, organization_id }: RegisterPetUseCaseRequest) {
+  async execute({ name, about, animal, gender, breed, age, size, energy_level, independency_level, photo, city, organization_id }: RegisterPetUseCaseRequest): Promise<RegisterPetUseCaseResponse> {
+
+    const organization = await this.organizationsRepository.findById(organization_id);
 
     const pet = await this.petsRepository.register({
       name,
@@ -36,5 +45,5 @@ export class RegisterPetUseCase {
     });
 
     return { pet };
-  }
-}
+  };
+};

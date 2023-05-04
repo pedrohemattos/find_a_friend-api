@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import { z } from "zod";
 import { PrismaOrganizationsRepository } from "../../../repositories/prisma/prisma-organizations-repository";
 import { CreateOrganizationUseCase } from "../../../use-cases/createOrganization";
+import { FindCityByCep } from "../location/find-city-and-state-by-cep";
+import { EmailAlreadyExistsError } from "../../../use-cases/errors/email-already-exists-error";
 
 export async function create(request: Request, response: Response) {
   const createBodySchema = z.object({
@@ -9,19 +11,14 @@ export async function create(request: Request, response: Response) {
       email: z.string().email(),
       password: z.string(),
       phone: z.string(),
-      address: z.object({
-        street: z.string(),
-        zip_code: z.string(),
-        city: z.string()
-      })
+      zip_code: z.string().trim().length(8),
   });
 
-  const { name, email, phone, password, address } = createBodySchema.parse(request.body);
-
-  // 1. Instanciar o repositório prisma das organizações
-  // 2. Instanciar o caso de uso de criação das organizações
-  // 3. Passar como parâmetro o repositório prisma para o caso de uso
   try {
+    const { name, email, phone, password, zip_code } = createBodySchema.parse(request.body);
+
+    const { city } = await FindCityByCep(zip_code);
+
     const organizationsRepository = new PrismaOrganizationsRepository();
     const createOrganizationUseCase = new CreateOrganizationUseCase(organizationsRepository);
 
@@ -30,12 +27,18 @@ export async function create(request: Request, response: Response) {
       email,
       phone,
       password,
-      address
+      zip_code,
+      city
     });
+    
+    return response.status(201).send();
 
   } catch (error) {
-    return response.status(409).send(error);
-  }
+    if(error instanceof EmailAlreadyExistsError) {
+      return response.status(409).send({ message: error.message });
+    }
 
-  return response.status(201).send();
+    throw error;
+  };
+
 };

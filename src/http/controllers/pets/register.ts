@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { z } from "zod";
 import { PrismaPetsRepository } from "../../../repositories/prisma/prisma-pets-repository";
 import { RegisterPetUseCase } from "../../../use-cases/registerPet";
+import { PrismaOrganizationsRepository } from "../../../repositories/prisma/prisma-organizations-repository";
 
 export async function register(request: Request, response: Response) {
   const createBodySchema = z.object({
@@ -15,16 +16,24 @@ export async function register(request: Request, response: Response) {
     energy_level: z.enum(["LOW", "MEDIUM", "HIGH"]),
     independency_level: z.enum(["LOW", "MEDIUM", "HIGH"]),
     photo: z.string().optional().default("Não informado."),
-    city: z.string(),
     organization_id: z.string()
   });
 
-  const { name, about, animal, gender, breed, age, size, energy_level, independency_level, photo, city, organization_id } = createBodySchema.parse(request.body);
-
   try {
+    const { name, about, animal, gender, breed, age, size, energy_level, independency_level, photo, organization_id } = createBodySchema.parse(request.body);
+    
     const petsRepository = new PrismaPetsRepository();
-    const registerPetUseCase = new RegisterPetUseCase(petsRepository);
+    const organizationsRepository = new PrismaOrganizationsRepository();
+    const registerPetUseCase = new RegisterPetUseCase(petsRepository, organizationsRepository);
 
+    const organization = await organizationsRepository.findById(organization_id);
+    
+    if(!organization) {
+      return response.status(404).send({ message: "Organization not found." })
+    }
+
+    const city = organization.city;
+    
     await registerPetUseCase.execute({
       name,
       about,

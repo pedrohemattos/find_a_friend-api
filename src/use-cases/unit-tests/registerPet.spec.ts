@@ -13,9 +13,9 @@ describe('Register Pet Use Case', () => {
 
   beforeEach(() => {
     petsRepository = new InMemoryPetsRepository();
-    registerPetUseCase = new RegisterPetUseCase(petsRepository);
-
     organizationsRepository = new InMemoryOrganizationsRepository();
+    
+    registerPetUseCase = new RegisterPetUseCase(petsRepository, organizationsRepository);
     createOrganizationUseCase = new CreateOrganizationUseCase(organizationsRepository);
   })
 

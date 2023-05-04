@@ -13,7 +13,15 @@ export class InMemoryOrganizationsRepository implements OrganizationsRepository 
         this.items.push(organization);
 
         return organization;
-    }
+    };
+
+    async findById(id: string) {
+        const organization = this.items.find(organization =>  organization.id === id);
+
+        if(!organization) return null;
+
+        return organization;
+    };
 
     async findEmail(email: string) {
         const organization = this.items.find(organization => organization.email === email);
@@ -21,6 +29,14 @@ export class InMemoryOrganizationsRepository implements OrganizationsRepository 
         if(!organization) return null;
 
         return organization;
-    }
+    };
 
-}
+    async listAll() {
+        const organizations = this.items;
+
+        if(!organizations) return null;
+
+        return organizations;
+    };
+
+};

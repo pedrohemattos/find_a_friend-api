@@ -1,11 +1,12 @@
 import { Prisma, Pet } from "@prisma/client";
 import { PetsRepository } from "../pets-repository";
+import { FilterQuery } from "../../http/controllers/pets/filter";
 
 export class InMemoryPetsRepository implements PetsRepository {
   
   private items: Pet[] = [];
   
-  register(data: Prisma.PetUncheckedCreateInput) {
+  async register(data: Prisma.PetUncheckedCreateInput) {
     const pet = Object.assign({
       ...data,
       id: 'id-pet'
@@ -16,9 +17,13 @@ export class InMemoryPetsRepository implements PetsRepository {
     return pet;
   };
   
-  async listAll(city: string) {
+  async findByCity(city: string) {
     const pets  = this.items.filter(pet => pet.city === city);
     
+    if(!pets) {
+      return null;
+    }
+
     return pets;
   };
 
@@ -29,8 +34,20 @@ export class InMemoryPetsRepository implements PetsRepository {
       return null;
     }
 
-    console.log(pet)
     return pet;
-  }
+  };
+
+  async filterPets(query: FilterQuery) {
+    const filteredPets = this.items.filter(
+      (pet) => {
+        return (!query.animal || pet.animal === query?.animal) &&
+        (!query.gender || pet.gender === query?.gender) &&
+        (!query.size || pet.size === query?.size) &&
+        (!query.age || pet.age === query?.age)
+      }
+    );
+
+    return filteredPets;
+  };
   
-}
+};

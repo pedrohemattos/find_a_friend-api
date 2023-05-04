@@ -1,20 +1,32 @@
 import { InMemoryPetsRepository } from "../../repositories/in-memory/in-memory-pets-repository";
-import { ListAllPetsUseCase } from "../listAllPets";
+import { SearchPetsUseCase } from "../searchPets";
 import { RegisterPetUseCase } from "../registerPet";
+import { InMemoryOrganizationsRepository } from "../../repositories/in-memory/in-memory-organizations-repository";
 
 let petsRepository: InMemoryPetsRepository;
+let organizationsRepository: InMemoryOrganizationsRepository;
 let registerPetUseCase: RegisterPetUseCase;
-let listAllPetsUseCase: ListAllPetsUseCase;
+let searchPetsUseCase: SearchPetsUseCase;
 
-describe('Register Pet Use Case', () => {
+describe('Search Pet Use Case', () => {
 
   beforeEach(() => {
     petsRepository = new InMemoryPetsRepository();
-    registerPetUseCase = new RegisterPetUseCase(petsRepository);
-    listAllPetsUseCase = new ListAllPetsUseCase(petsRepository);
+    organizationsRepository = new InMemoryOrganizationsRepository();
+    
+    registerPetUseCase = new RegisterPetUseCase(petsRepository, organizationsRepository);
+    searchPetsUseCase = new SearchPetsUseCase(petsRepository);
   })
 
   it('should be able to list all pets from a given city', async () => {
+    const org = await organizationsRepository.create({
+      name: "org",
+      email: "org@email.com",
+      city: "Florianópolis",
+      password_hash: "123",
+      phone: "123",
+      zip_code: "123",
+    });
 
     await registerPetUseCase.execute({
       name: "Caramelinho",
@@ -28,7 +40,7 @@ describe('Register Pet Use Case', () => {
       independency_level: "HIGH",
       city: "Cidade 1",
       photo: "url_da_foto",
-      organization_id: "org-id"
+      organization_id: org.id
     });
 
     await registerPetUseCase.execute({
@@ -43,10 +55,10 @@ describe('Register Pet Use Case', () => {
       independency_level: "LOW",
       city: "Cidade 2",
       photo: "url_da_foto",
-      organization_id: "org-id"
+      organization_id: org.id
     });
 
-    const pets = await listAllPetsUseCase.execute({
+    const { pets } = await searchPetsUseCase.execute({
       city: 'Cidade 2'
     });
 
