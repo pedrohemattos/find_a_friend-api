@@ -3,6 +3,7 @@ import { z } from "zod";
 import { PrismaPetsRepository } from "../../../repositories/prisma/prisma-pets-repository";
 import { SearchPetsUseCase } from "../../../use-cases/searchPets";
 import { PetNotFoundError } from "../../../use-cases/errors/pet-not-found-error";
+import cloudinary from "../../../../cloudinary.config";
 
 export async function search(request: Request, response: Response) {
   const listAllParamsSchema = z.object({

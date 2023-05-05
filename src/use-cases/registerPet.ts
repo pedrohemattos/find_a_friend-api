@@ -1,7 +1,6 @@
 import { Pet } from "@prisma/client";
 import { PetsRepository } from "../repositories/pets-repository";
 import { OrganizationsRepository } from "../repositories/organizations-repository";
-import { OrganizationNotFoundError } from "./errors/organization-not-found-error";
 
 interface RegisterPetUseCaseRequest {
   name: string
@@ -9,7 +8,7 @@ interface RegisterPetUseCaseRequest {
   animal: "DOG" | "CAT"
   gender: "MALE" | "FEMALE"
   breed?: string
-  age: string
+  age: "PUPPY" | "YOUNG_ADULT" | "MATURE_ADULT" | "SENIOR"
   size: "MINI" | "P" | "M" | "G" | "XG"
   energy_level: "LOW" | "MEDIUM" | "HIGH"
   independency_level: "LOW" | "MEDIUM" | "HIGH"

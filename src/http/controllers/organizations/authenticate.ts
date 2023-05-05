@@ -28,11 +28,30 @@ export async function authenticate(request: Request, response: Response) {
       env.JWT_SECRET,
       {
         subject: organization.id,
-        expiresIn: '10s'
+        expiresIn: '10m'
       }
     );
 
-    return response.status(200).send({ token });
+    const refreshToken = jwt.sign(
+      {},
+      env.JWT_SECRET,
+      {
+        subject: organization.id,
+        expiresIn: '7d'
+      }
+    );
+
+    return response
+      .cookie("refreshToken", refreshToken, {
+        httpOnly: true,
+        path: '/',
+        secure: true,
+        sameSite: true,
+      })
+      .status(200)
+      .send({
+        token
+      });
   } catch (error) {
     if(error instanceof InvalidCredentialsError) {
       return response.status(401).send({ message: error.message });

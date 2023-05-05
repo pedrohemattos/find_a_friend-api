@@ -7,7 +7,7 @@ import { PetNotFoundError } from "../../../use-cases/errors/pet-not-found-error"
 const filterQuerySchema = z.object({
   animal: z.enum(["DOG", "CAT"]).optional(),
   gender: z.enum(["MALE", "FEMALE"]).optional(),
-  age: z.string().optional(),
+  age: z.enum(["PUPPY", "YOUNG_ADULT", "MATURE_ADULT", "SENIOR"]),
   size: z.enum(["MINI", "P", "M", "G", "XG"]).optional()
 });
 

@@ -8,21 +8,22 @@ cloudinary.config({
 
 export default cloudinary
 
-// Upload
-const res = cloudinary.uploader.upload('https://upload.wikimedia.org/wikipedia/commons/a/ae/Olympic_flag.jpg', {public_id: "olympic_flag"})
+// // Upload
 
-res.then((data) => {
-  console.log(data);
-  console.log(data.secure_url);
-}).catch((err) => {
-  console.log(err);
-});
+// const res = cloudinary.uploader.upload('https://upload.wikimedia.org/wikipedia/commons/a/ae/Olympic_flag.jpg', {public_id: "olympic_flag"})
 
-// Generate 
-const url = cloudinary.url("olympic_flag", {
-  width: 100,
-  height: 150,
-  Crop: 'fill'
-});
+// res.then((data) => {
+//   console.log(data);
+//   console.log(data.secure_url);
+// }).catch((err) => {
+//   console.log(err);
+// });
 
-console.log(url);
+// // Generate 
+// const url = cloudinary.url("olympic_flag", {
+//   width: 100,
+//   height: 150,
+//   Crop: 'fill'
+// });
+
+// console.log(url);

@@ -11,7 +11,7 @@ export async function register(request: Request, response: Response) {
     animal: z.enum(["DOG", "CAT"]),
     gender: z.enum(["MALE", "FEMALE"]),
     breed: z.string().optional().default("Não informado."),
-    age: z.string(),
+    age: z.enum(["PUPPY", "YOUNG_ADULT", "MATURE_ADULT", "SENIOR"]),
     size: z.enum(["MINI", "P", "M", "G", "XG"]),
     energy_level: z.enum(["LOW", "MEDIUM", "HIGH"]),
     independency_level: z.enum(["LOW", "MEDIUM", "HIGH"]),

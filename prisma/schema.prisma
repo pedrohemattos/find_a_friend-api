@@ -31,7 +31,7 @@ model Pet {
   animal             Animal
   gender             Gender
   breed              String?
-  age                String
+  age                Age
   size               Size
   energy_level       Level
   independency_level Level
@@ -52,6 +52,13 @@ enum Animal {
 enum Gender {
   MALE
   FEMALE
+}
+
+enum Age {
+  PUPPY
+  YOUNG_ADULT
+  MATURE_ADULT
+  SENIOR
 }
 
 enum Size {
