@@ -4,20 +4,22 @@ import { PrismaOrganizationsRepository } from "../../../repositories/prisma/pris
 import { CreateOrganizationUseCase } from "../../../use-cases/createOrganization";
 import { FindCityByCep } from "../location/find-city-and-state-by-cep";
 import { EmailAlreadyExistsError } from "../../../use-cases/errors/email-already-exists-error";
+import { AddressNotFoundError } from "../../../use-cases/errors/address-not-found-error";
 
 export async function create(request: Request, response: Response) {
   const createBodySchema = z.object({
-      name: z.string(),
-      email: z.string().email(),
-      password: z.string(),
-      phone: z.string(),
-      zip_code: z.string().trim().length(8),
+    name: z.string(),
+    email: z.string().email(),
+    password: z.string(),
+    phone: z.string(),
+    zip_code: z.string().trim().length(8),
+    city: z.string()
   });
 
   try {
-    const { name, email, phone, password, zip_code } = createBodySchema.parse(request.body);
+    const { name, email, phone, password, zip_code, city } = createBodySchema.parse(request.body);
 
-    const { city } = await FindCityByCep(zip_code);
+    // let { city } = await FindCityByCep(zip_code);
 
     const organizationsRepository = new PrismaOrganizationsRepository();
     const createOrganizationUseCase = new CreateOrganizationUseCase(organizationsRepository);
@@ -37,7 +39,7 @@ export async function create(request: Request, response: Response) {
     if(error instanceof EmailAlreadyExistsError) {
       return response.status(409).send({ message: error.message });
     }
-
+    
     throw error;
   };
 
