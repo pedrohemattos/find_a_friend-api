@@ -25,7 +25,10 @@ export async function register(request: Request, response: Response) {
     const organizationsRepository = new PrismaOrganizationsRepository();
     const registerPetUseCase = new RegisterPetUseCase(petsRepository, organizationsRepository);
 
+    
     const organization_id = request.sub;
+
+    console.log(organization_id)
   
     const organization = await organizationsRepository.findById(organization_id);
     

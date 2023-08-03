@@ -13,6 +13,8 @@ export function verifyJWT(request: Request, response: Response, next: NextFuncti
 
   try {
     const data = jwt.verify(token, env.JWT_SECRET);
+    console.log(data)
+
     const { sub } = data;
     //TODO: corrigir esse erro de ts:
     request.sub = sub;
